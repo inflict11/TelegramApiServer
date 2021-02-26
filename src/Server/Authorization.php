@@ -44,10 +44,26 @@ class Authorization implements Middleware
                 return true;
             }
         }
+        if ($options['k8s']) {
+            $isSameNetwork = $this->isSameNetwork(ip2long($host));
+            if ($isSameNetwork) {
+                return true;
+            }
+        }
 
         if ($this->ipWhitelist && !in_array($host, $this->ipWhitelist, true)) {
             return false;
         }
         return true;
+    }
+
+    private function isSameNetwork($ipToCheck): bool
+    {
+        // CIDR x.x.x.x/24 = 256 ip адресов, от x.x.x.0 до x.x.x.255
+        // проверяем, что ip входящего запроса находится в этом диапазоне относительно selfIp
+        $mask = '24';
+        $ip_mask = ~((1 << (32 - $mask)) - 1);
+
+        return (($ipToCheck & $ip_mask) == ($this->selfIp & $ip_mask));
     }
 }
