@@ -18,6 +18,7 @@ $longopts = [
     'session::', //префикс session файла
     'env::', //путь до .env файла
     'docker::', //включить настройки для запуска внутри docker
+    'k8s::', //включить настройки для запуска в kubernetes
     'help', //нужна ли справка?
 ];
 $options = getopt($shortopts, $longopts);
@@ -27,6 +28,7 @@ $options = [
     'session' => (array) ($options['session'] ?? $options['s'] ?? []),
     'env' => $options['env'] ?? $options['e'] ?? '.env',
     'docker' => isset($options['docker']),
+    'k8s' => isset($options['k8s']),
     'help' => isset($options['help']),
 ];
 
